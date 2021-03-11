@@ -17,7 +17,7 @@
 class Ebox_Cliqueretire_Api
 {
     const API_ENDPOINT_PRODUCTION = 'https://services.cliqueretire.com.br/ebox/api/v1';
-    const API_ENDPOINT_STAGING = 'https://gqc9xey2vj.execute-api.sa-east-1.amazonaws.com/staging/api/v1';
+    const API_ENDPOINT_STAGING = 'https://services-stg.cliqueretire.com.br/ebox/api/v1';
     const API_TIMEOUT = 30;
     const API_USER_AGENT = 'Ebox_Cliqueretire for WooCommerce';
 

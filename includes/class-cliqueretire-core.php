@@ -298,14 +298,14 @@ class Ebox_Cliqueretire_Core
     {
         $environment = $_POST['wc_settings_cliqueretire_environment'];
         $newApiId = $_POST['wc_settings_cliqueretire_api_id'];
-        $isValidApiKey = $this->validate_keys($newApiKey, $currentApiKey, $newApiId, $environment);
+        $this->validate_keys($newApiKey, $currentApiKey, $newApiId, $environment);
 
-        if (!$isValidApiKey) {
-            //return;
-        }
+        // if (!$isValidApiKey) {
+        //     return;
+        // }
 
-        $this->register_shopping_cart_name();
-        $this->register_webhook($newApiKey, $newApiId, $environment);
+        //$this->register_shopping_cart_name();
+        // $this->register_webhook($newApiKey, $newApiId, $environment);
     }
 
     private function register_webhook($newApiKey, $newApiId, $environment = null)
@@ -423,7 +423,6 @@ class Ebox_Cliqueretire_Core
                     'Validating API Key Result',
                     'API Key ' . $newApiKey . 'is INVALID'
                 );
-                print('error');
                 $this->show_api_notice(false);
 
                 return false;
@@ -432,7 +431,6 @@ class Ebox_Cliqueretire_Core
                     'Validating API Key Result',
                     'API Key ' . $newApiKey . 'is VALID'
                 );
-                print('foii');
                 $this->show_api_notice(true);
 
                 return true;

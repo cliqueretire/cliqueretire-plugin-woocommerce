@@ -333,18 +333,19 @@ $currencySymbol = "R$";
         setInterval(() => {
             var location = $('#cr_cleanerLocker').length
             var checkbox = $('#shipping_method_0_ebox_cliqueretire')
-            if (location > 0 && cliqueretireEnviaMethod && checkbox.is(':checked') === false) {
+            if (location > 0 && cliqueretireEnviaMethod && (checkbox.is(':checked') === false && checkbox.attr('type')!="hidden")) {
                 shippingButton.prop("disabled",true)
                 jQuery('#cr_cleanerLocker').click()
-            } else if (location > 0 && cliqueretireEnviaMethod && checkbox.is(':checked') === true) {
+            } else if (location > 0 && cliqueretireEnviaMethod && (checkbox.is(':checked') === true && checkbox.attr('type')!="hidden")) {
                 shippingButton.prop("disabled",false)
-            } else if (location === 0 && cliqueretireEnviaMethod && checkbox.is(':checked') === false) {
+            } else if (location === 0 && cliqueretireEnviaMethod && (checkbox.is(':checked') === false && checkbox.attr('type')!="hidden")) {
                 shippingButton.prop("disabled",false)
-            } else if (location === 0 && cliqueretireEnviaMethod && checkbox.is(':checked') === true) {
+            } else if (location === 0 && cliqueretireEnviaMethod && (checkbox.is(':checked') === true && checkbox.attr('type')!="hidden")) {
                 shippingButton.prop("disabled",true)
             }
         }, 1000)
     }
+
     window.addEventListener('message', async (e) => {
       if (e.data.length > 0) {
         locker = JSON.parse(e.data)
