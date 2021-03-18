@@ -23,14 +23,13 @@ include_once('includes/class-cliqueretire-order.php');
 include_once('includes/class-cliqueretire-object.php');
 include_once('includes/class-cliqueretire-api.php');
 
-
 function init_cliqueretire_core()
 {
-    include_once('includes/class-upgrade.php');
-    $upgrade = new Ebox_Cliqueretire_Upgrade();
-    $upgrade->run();
-
-    // import helper classes
+//     include_once('includes/class-upgrade.php');
+//     $upgrade = new Ebox_Cliqueretire_Upgrade();
+//     $upgrade->run();
+    
+    // import helper classes   
     include_once('includes/class-cliqueretire-data-mapper-order.php');
     include_once('includes/class-cliqueretire-data-mapper-order-v26.php');
     include_once('includes/class-cliqueretire-data-mapper-order-item.php');
@@ -85,7 +84,7 @@ function register_cliqueretire_script()
 }
 
 function init_cliqueretire_method()
-{
+{   
     include_once('includes/class-cliqueretire-method.php');
     include_once('includes/class-cliqueretire-method-legacy.php');
 
