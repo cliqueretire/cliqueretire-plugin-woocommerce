@@ -1,0 +1,17 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: alpine:3.7
+    steps:
+      - run:
+          name: Setting the new version
+          command: |
+            sed -i 's/1.0.0/1.0.2/g' wwoocommerce-cliqueretire.php
+            
+      - run:
+          name: Compressing files
+          command: |
+            zip -r woocommerce-cliqueretire.zip assets/ includes/ pages/ woocommerce-cliqueretire.php
+
+        
