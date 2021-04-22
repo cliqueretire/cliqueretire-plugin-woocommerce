@@ -16,6 +16,20 @@ jobs:
           name: Compressing files
           command: |
             zip -r woocommerce-cliqueretire.zip assets/ includes/ pages/ woocommerce-cliqueretire.php
+      - store_artifacts:
+          path: woocommerce-cliqueretire.zip
+          destination: ./artifacts/woocommerce-cliqueretire.zip
+  # publish-github-release:
+  #   docker:
+  #     - image: cibuilds/github:0.10
+  #   steps:
+  #     - attach_workspace:
+  #       at: ./artifacts
+  #     - run:
+  #         name: "Publish Release on GitHub"
+  #         command: |
+  #           VERSION=$(my-binary --version)
+  #           ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
 
 # workflows:
 #   version: 2
