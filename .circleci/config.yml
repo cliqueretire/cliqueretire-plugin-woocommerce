@@ -8,12 +8,18 @@ jobs:
       - run:
           name: Setting the new version
           command: |
-            ls -lah
-            sed -i 's/1.0.0/1.0.2/g' wwoocommerce-cliqueretire.php
+            sed -i 's/1.0.0/<<pipeline.git.tag>>/g' woocommerce-cliqueretire.php
             
       - run:
           name: Compressing files
           command: |
             zip -r woocommerce-cliqueretire.zip assets/ includes/ pages/ woocommerce-cliqueretire.php
 
-        
+# workflows:
+#   version: 2
+#   tagged-build:
+#     jobs:
+#       - build:
+#           filters:
+#             tags:
+#               only: /^(\d+\.*)+/
