@@ -2,7 +2,7 @@ name: Create Archive
 on:
   push:
     tags:
-      - '^(\d+\.*)+'
+      - '*.*.*'
 jobs:
   configure-version:
     runs-on: ubuntu-latest
