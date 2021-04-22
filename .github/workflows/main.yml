@@ -1,0 +1,23 @@
+name: Create Archive
+on:
+  push:
+    tags:
+      - '^(\d+\.*)+'
+jobs:
+  configure-version:
+    runs-on: ubuntu-latest
+    name: Configure  the new version $GITHUB_REF
+    steps:
+      - uses: actions/checkout@master
+      - name: Configure  the new version $GITHUB_REF  
+        run: |
+          sed -i 's/1.0.0/$GITHUB_REF/g' woocommerce-cliqueretire.php
+  build:
+    needs: ['configure-version']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Archive Release
+        uses: thedoctor0/zip-release@master
+        with:
+          filename: 'woocommerce-cliqueretire.zip'
+          exclusions: '*.git* /*docker-compose/* /*circleci*'
