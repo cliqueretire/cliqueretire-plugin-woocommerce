@@ -1,0 +1,49 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: alpine:3.7
+    steps:
+      - checkout
+      - run:
+          name: configure the new version <<pipeline.git.tag>>
+          command: |
+            sed -i 's/1.0.0/<<pipeline.git.tag>>/g' woocommerce-cliqueretire.php
+      - run: 
+          name: Install the zip package
+          command: apk add zip      
+      - run:
+          name: Compressing files
+          command: |
+            zip -r woocommerce-cliqueretire.zip assets/ includes/ pages/ woocommerce-cliqueretire.php
+      - store_artifacts:
+          path: woocommerce-cliqueretire.zip
+          destination: ./artifacts/woocommerce-cliqueretire.zip
+  publish-github-release:
+    docker:
+      - image: cibuilds/github:0.10
+    steps:
+      - attach_workspace:
+          at: ./artifacts
+      - run:
+          name: "Publish Release on GitHub for <<pipeline.git.tag>>"
+          command: |
+            VERSION=<<pipeline.git.tag>>
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
+
+workflows:
+  version: 2
+  tagged-build:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /^(\d+\.*)+/
+      # para habilitar esse job é necessário configurar o token do usuário no github
+      # não habilitei tal recurso pois ficaria atrelado a um usuário desenvolvedor podendo quebrar o serviçø no futuro
+      # - publish-github-release:
+      #     requires:
+      #       - build
+      #     filters:
+      #       tags:
+      #         only: /^(\d+\.*)+/
