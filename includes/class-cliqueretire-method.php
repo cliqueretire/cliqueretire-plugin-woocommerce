@@ -65,8 +65,8 @@ class Ebox_Cliqueretire_Method extends WC_Shipping_Method
         $this->filter_attribute        = $this->get_option('filter_attribute');
         $this->filter_attribute_code   = $this->get_option('filter_attribute_code');
         $this->filter_attribute_value  = $this->get_option('filter_attribute_value');
-        $this->margin_days                 = $this->get_option('margin_days');
-        $this->margin_days_amount           = $this->get_option('margin_days_amount');
+        $this->margin_days             = $this->get_option('margin_days');
+        $this->margin_days_amount      = $this->get_option('margin_days_amount');
 
         $this->margin                  = $this->get_option('margin');
         $this->margin_amount           = $this->get_option('margin_amount');
@@ -250,7 +250,7 @@ class Ebox_Cliqueretire_Method extends WC_Shipping_Method
                 'cost' => $quotePrice,
                 'meta_data' => array(
                     'service_level' => 'test',
-                    'courier_allocation' => 'test2',
+                    'courier_allocation' => 'test2'
                 )
              );
 
