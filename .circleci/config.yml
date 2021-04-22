@@ -26,7 +26,7 @@ jobs:
       - attach_workspace:
           at: ./artifacts
       - run:
-          echo $(my-binary --version)
+          echo <<pipeline.git.tag>>
           # name: "Publish Release on GitHub"
           # command: |
           #   VERSION=$(my-binary --version)
