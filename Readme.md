@@ -9,7 +9,7 @@
 
 **Comandos auxiliares**  
 
- - Visualizar Tags localmente `$ git tags`
+ - Visualizar Tags localmente `$ git tag`
  - Exluir Tags localmente `$ git tag -d 1.0.x`
  - Excluir Tags Remotamente(repositório) `$git push --delete origin 1.0.x`
  - Alias para criar release
