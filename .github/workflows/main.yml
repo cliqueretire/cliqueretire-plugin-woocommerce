@@ -29,10 +29,11 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           filename: 'woocommerce-cliqueretire.zip'
-          exclusions: '*.git* docker-compose*.* *.circleci*'
+          exclusions: '*.git* docker-compose*.* *.circleci* releases/*'
 
       - name: Upload Release
         uses: ncipollo/release-action@v1
         with:
           artifacts: "woocommerce-cliqueretire.zip"
+          bodyFile: "releases/${{ steps.vars.outputs.SOURCE_TAG }}.md"
           token: ${{ secrets.GITHUB_TOKEN }}
