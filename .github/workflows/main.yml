@@ -7,7 +7,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Configure  the new version $GITHUB_REF  
+      - name: Configure the new version $GITHUB_REF  
         run: |
           sed -i 's/1.0.0/$GITHUB_REF/g' woocommerce-cliqueretire.php
       - name: Archive Release
