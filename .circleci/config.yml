@@ -6,10 +6,12 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Setting the new version
+          name: configure the new version
           command: |
             sed -i 's/1.0.0/<<pipeline.git.tag>>/g' woocommerce-cliqueretire.php
-            
+      - run: 
+          name: Install the zip package
+          command: apk add zip      
       - run:
           name: Compressing files
           command: |
