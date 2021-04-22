@@ -1,6 +1,35 @@
 <?php
 $url_webview = "https://webview.cliqueretire.com.br/";
 $currencySymbol = "R$";
+
+$margin_amount = 0;
+$margin_days_amount = 0;
+$has_margin_days = 'no';
+$has_margin = 'no';
+
+$zone_ids = array_keys( array('') + WC_Shipping_Zones::get_zones() );
+
+// Loop through shipping Zones IDs
+foreach ( $zone_ids as $zone_id ) 
+{
+    // Get the shipping Zone object
+    $shipping_zone = new WC_Shipping_Zone($zone_id);
+
+    // Get all shipping method values for the shipping zone
+    $shipping_methods = $shipping_zone->get_shipping_methods( true, 'values' );
+
+    // Loop through each shipping methods set for the current shipping zone
+    foreach ( $shipping_methods as $instance_id => $shipping_method ) 
+    {
+      if($shipping_method->id == 'ebox_cliqueretire'){
+        $has_margin_days = $shipping_method->get_option('margin_days');
+        $margin_days_amount = $shipping_method->get_option('margin_days_amount');
+        $margin_amount = $shipping_method->get_option('margin_amount');
+        $has_margin = $shipping_method->get_option('margin');
+      }
+    }
+}
+
 ?>
 
 <div id='cliqueretire-box'></div>
@@ -180,6 +209,7 @@ $currencySymbol = "R$";
     script.src = url
     document.getElementsByTagName('head')[0].appendChild(script)
   }
+  
   var crBoxCliqueRetire = (locker) => `<div class="cr_box-cliqueretire">
       <h4>Receba fora de casa</h4>
       <div class="cr_box-item col-1-2">
@@ -188,9 +218,10 @@ $currencySymbol = "R$";
           <a href="#" id="cr_buttonOpen">Escolher local para retirada</a>
           </div>`
           : `<p>Você escolheu retirar sua compra no e-box ${locker.name} (${locker.orderNo})</p>
-          <p><b>Prazo de Entrega:</b> ${locker.shippingData.estimateDays} dias úteis</p>
-          <p><b>Valor Frete:</b> <?php echo $currencySymbol; ?> ${locker.shippingData.absoluteValue.toFixed(2)}</p>
-
+          <p><b>Prazo de Entrega:</b> ${getQuoteDays(locker.shippingData.estimateDays)} dias úteis</p>
+          <p><b>Valor Frete:</b> <?php echo $currencySymbol; ?> ${getQuotePrice(locker.shippingData.absoluteValue).toFixed(2)}</p>
+          <p><b>Informações:</b> ${locker.location.additional_information} </p>
+          
       <button id="cr_cleanerLocker">Limpar ou alterar o local</button>
       </div>`}
       <div class="box-item col-1-2">
@@ -240,6 +271,36 @@ $currencySymbol = "R$";
       )
     }
   }
+
+  var getQuotePrice = (quotePrice) =>
+    {
+        switch ("<?=$has_margin;?>"){
+            case 'yes-fixed':
+                quotePrice += <?=$margin_amount;?>;
+                break;
+            case 'yes-percentage':
+                quotePrice *= (1 + ( <?=$margin_amount;?> / 100));
+        }
+
+        // ensure we get the lowest price, but not below 0.
+        quotePrice = Math.max(0, quotePrice);
+
+        return quotePrice;
+    }
+
+  var getQuoteDays = (quoteDays) => {
+      switch ("<?=$has_margin_days;?>") {
+          case 'yes':
+              quoteDays += <?=$margin_days_amount;?>;
+              break;
+      }
+
+      // ensure we get the lowest price, but not below 0.
+      quoteDays = Math.max(0, quoteDays);
+
+      return quoteDays;
+  }
+
   var setShippingAddress = (locker) => {
     let lastAddress = null
     if (locker) {
@@ -249,6 +310,8 @@ $currencySymbol = "R$";
         shippingStreet1: document.getElementById('shipping_address_1').value,
         shippingStreet2: document.getElementById('shipping_address_2').value,
         shippingCity: document.getElementById('shipping_city').value,
+        shippingNumber: document.getElementById('shipping_number') ? document.getElementById('shipping_number').value : 0,
+        shippingNeighborhood: document.getElementById('shipping_neighborhood') ? document.getElementById('shipping_neighborhood').value : "",
         shippingRegion: document.getElementById('shipping_state').value,
         shippingPostCode: document.getElementById('shipping_postcode').value,
         shippingSameAsBilling: document.getElementById('ship-to-different-address-checkbox').checked
@@ -264,10 +327,21 @@ $currencySymbol = "R$";
     document.getElementById('shipping_address_1').value = (locker) ? locker.location.street : lastAddress.shippingStreet1
     document.getElementById('shipping_address_2').value = (locker) ? locker.orderNo + ' ' + locker.location.reference : lastAddress.shippingStreet2
     document.getElementById('shipping_city').value = (locker) ? locker.location.city : lastAddress.shippingCity
+    document.getElementById('shipping_city').value = (locker) ? locker.location.city : lastAddress.shippingCity
     document.getElementById('shipping_state').value = (locker) ? locker.location.state : lastAddress.shippingRegion
+    
+    if(document.getElementById('shipping_number')){
+      document.getElementById('shipping_number').value = (locker) ? locker.location.number : lastAddress.shippingNumber
+    }
+
+    if(document.getElementById('shipping_neighborhood')){
+      document.getElementById('shipping_neighborhood').value = (locker) ? locker.location.neighborhood : lastAddress.shippingNeighborhood
+    }
+
     document.getElementById('shipping_postcode').value = (locker) ? locker.location.zip_code : lastAddress.shippingPostCode
     document.getElementById('ship-to-different-address-checkbox').checked = (locker) ? true : lastAddress.shippingSameAsBilling
     // jQuery('#ship-to-different-address-checkbox').click();
+    jQuery('#shipping_state').trigger('change');
     jQuery('body').trigger('update_checkout');
   }
 
@@ -317,13 +391,13 @@ $currencySymbol = "R$";
     }
 
     UpdateCliqueRetire(renderLayout, locker || null)
-    console.log('check place order');
+    //console.log('check place order');
     if ($('#place_order').length > 0) {
         var shippingButton = $('#place_order')
         var shippingMethod = document.querySelectorAll('.shipping_method')
         let cliqueretireEnviaMethod = null
         shippingMethod.forEach(method => {
-        if (method.id === 'shipping_method_0_ebox_cliqueretire') {
+        if (method.id.toUpperCase().indexOf("EBOX_CLIQUERETIRE") > -1) {
             method.checked = true
             cliqueretireEnviaMethod = method
         }
@@ -332,7 +406,7 @@ $currencySymbol = "R$";
         shippingButton.prop("disabled",true)
         setInterval(() => {
             var location = $('#cr_cleanerLocker').length
-            var checkbox = $('#shipping_method_0_ebox_cliqueretire')
+            var checkbox = $("input[id*='ebox_cliqueretire']")
             if (location > 0 && cliqueretireEnviaMethod && (checkbox.is(':checked') === false && checkbox.attr('type')!="hidden")) {
                 shippingButton.prop("disabled",true)
                 jQuery('#cr_cleanerLocker').click()
