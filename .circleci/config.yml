@@ -6,7 +6,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: configure the new version
+          name: configure the new version <<pipeline.git.tag>>
           command: |
             sed -i 's/1.0.0/<<pipeline.git.tag>>/g' woocommerce-cliqueretire.php
       - run: 
@@ -43,3 +43,6 @@ workflows:
       - publish-github-release:
           requires:
             - build
+          filters:
+            tags:
+              only: /^(\d+\.*)+/
