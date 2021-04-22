@@ -19,9 +19,7 @@ jobs:
 
       - name: Configure the new version $RELEASE_VERSION
         run: |
-          echo $SOURCE_TAG
-          echo $RELEASE_VERSION
-          sed -i 's/1.0.0/$($SOURCE_TAG)/g' woocommerce-cliqueretire.php
+          sed -i 's/1.0.0/$SOURCE_TAG/g' woocommerce-cliqueretire.php
         env:
           SOURCE_NAME: ${{ steps.vars.outputs.SOURCE_NAME }}
           SOURCE_BRANCH: ${{ steps.vars.outputs.SOURCE_BRANCH }}
@@ -31,4 +29,4 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           filename: 'woocommerce-cliqueretire.zip'
-          exclusions: '*.git* /*docker-compose/* /*circleci*'
+          exclusions: '*.git* docker-compose*.* .circleci*'
