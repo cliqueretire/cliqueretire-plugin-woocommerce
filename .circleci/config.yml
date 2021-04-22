@@ -8,6 +8,7 @@ jobs:
       - run:
           name: Setting the new version
           command: |
+            ls -lah
             sed -i 's/1.0.0/1.0.2/g' wwoocommerce-cliqueretire.php
             
       - run:
