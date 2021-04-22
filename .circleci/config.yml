@@ -26,11 +26,10 @@ jobs:
       - attach_workspace:
           at: ./artifacts
       - run:
-          echo <<pipeline.git.tag>>
-          # name: "Publish Release on GitHub"
-          # command: |
-          #   VERSION=$(my-binary --version)
-          #   ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/woocommerce-cliqueretire.zip
+          name: "Publish Release on GitHub for <<pipeline.git.tag>>"
+          command: |
+            VERSION=<<pipeline.git.tag>>
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/woocommerce-cliqueretire.zip
 
 workflows:
   version: 2
