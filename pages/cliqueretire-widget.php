@@ -23,8 +23,8 @@ foreach ( $zone_ids as $zone_id )
     {
       if($shipping_method->id == 'ebox_cliqueretire'){
         $has_margin_days = $shipping_method->get_option('margin_days');
-        $margin_days_amount = $shipping_method->get_option('margin_days_amount');
-        $margin_amount = $shipping_method->get_option('margin_amount');
+        $margin_days_amount = empty($shipping_method->get_option('margin_days_amount')) ? 0 : $shipping_method->get_option('margin_days_amount');
+        $margin_amount = empty($shipping_method->get_option('margin_amount')) ? 0 : $shipping_method->get_option('margin_amount');
         $has_margin = $shipping_method->get_option('margin');
       }
     }
